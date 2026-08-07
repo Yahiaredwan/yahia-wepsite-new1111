@@ -22,7 +22,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { subscriptionId, customer } = await req.json();
+    const { subscriptionId, customer, origin_url } = await req.json();
 
     if (!subscriptionId || !customer) {
       throw new Error("Missing required body parameters.");
@@ -116,7 +116,10 @@ Deno.serve(async (req) => {
     // Clean trailing slash if present
     const cleanedSupabaseUrl = supabaseUrl.endsWith("/") ? supabaseUrl.slice(0, -1) : supabaseUrl;
 
-    const reqOrigin = req.headers.get("origin") || req.headers.get("referer") || "http://localhost:5500";
+    let reqOrigin = origin_url || req.headers.get("origin") || req.headers.get("referer") || "https://yahiaredwan.com";
+    if (reqOrigin.includes("localhost") || reqOrigin.includes("127.0.0.1")) {
+        reqOrigin = "https://yahiaredwan.com";
+    }
     const originUrl = reqOrigin.endsWith("/") ? reqOrigin.slice(0, -1) : reqOrigin;
 
     const redirectionUrls = {

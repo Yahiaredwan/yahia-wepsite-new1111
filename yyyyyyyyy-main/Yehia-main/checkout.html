@@ -795,6 +795,7 @@
                         body: {
                             subscriptionId: subData.id,
                             cartTotal: cartTotal,
+                            origin_url: window.location.origin,
                             customer: {
                                 first_name: fullName.split(' ')[0] || "Customer",
                                 last_name: fullName.split(' ').slice(1).join(' ') || "Fawaterak",
