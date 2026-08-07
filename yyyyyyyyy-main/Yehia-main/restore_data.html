@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>استرجاع بيانات الأسئلة الشائعة</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: Tahoma, Arial, sans-serif; text-align: center; margin-top: 100px; }
+        .btn { padding: 15px 30px; font-size: 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .btn:hover { background: #218838; }
+        #status { margin-top: 20px; font-size: 18px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>تم مسح بيانات الأسئلة الشائعة سابقاً عن طريق الخطأ</h2>
+    <p>اضغط على الزر أدناه لاسترجاع الأسئلة الافتراضية لقاعدة البيانات</p>
+    <button class="btn" onclick="restoreFaqs()" id="restoreBtn">استرجاع البيانات الآن</button>
+    <div id="status"></div>
+
+    <script>
+        const supabaseUrl = 'https://tiornpjjrtajnmgvoqfb.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRpb3JucGpqcnRham5tZ3ZvcWZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzNzU3NTQsImV4cCI6MjA5OTk1MTc1NH0.KRiPpKDR8D1HKItFwBqb93Y5bLkLQTJWDA8fUchyd_E';
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        const defaultFaqs = [
+            { question: 'هل الدورة للمصريين فقط؟', answer: 'الدورة مفيدة للجمهور العربي عموماً في الفهم والحماية، لكن الإجراءات القانونية الدقيقة قد تختلف حسب الدولة.', order_index: 1 },
+            { question: 'هل تضمن الدورة إيقاف المبتز؟', answer: 'لا، الدورة تعليمية وتساعدك على حماية نفسك والأدلة ومعرفة الطريق، لكن لا تضمن نتيجة قانونية محددة.', order_index: 2 },
+            { question: 'أشتري الدورة أم أحجز استشارة؟', answer: 'للتعلم والوقاية: الدورة مناسبة. إذا كان لديك حالة فعلية تحتاج قراراً حسب الأدلة، فالاستشارة القانونية أنسب.', order_index: 3 },
+            { question: 'هل تناسب أولياء الأمور؟', answer: 'نعم جداً، لفهم كيفية حماية الأبناء والتعامل معهم وقت الأزمات بدون عنف أو ترهيب.', order_index: 4 },
+            { question: 'هل الدورة تعلم الاختراق؟', answer: 'لا، الدورة تعلم الحماية وتوعي بأساليب المخترقين لتجنبها، ولا تقدم أدوات للاختراق.', order_index: 5 },
+            { question: 'ما هو سعر الدورة؟', answer: 'السعر الأساسي 4500 جنيه، وسعر الإطلاق الحالي 700 جنيه لأول 100 مشترك.', order_index: 6 }
+        ];
+
+        async function restoreFaqs() {
+            const btn = document.getElementById('restoreBtn');
+            const status = document.getElementById('status');
+            btn.disabled = true;
+            btn.innerText = 'جاري الاسترجاع...';
+            status.style.color = '#333';
+            status.innerText = 'يرجى الانتظار...';
+
+            try {
+                // Delete any existing (just in case)
+                await supabaseClient.from('faqs').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+                
+                // Insert defaults
+                const { error } = await supabaseClient.from('faqs').insert(defaultFaqs);
+                
+                if (error) throw error;
+                
+                status.style.color = 'green';
+                status.innerText = 'تم استرجاع البيانات بنجاح! يمكنك الآن إغلاق هذه الصفحة والعودة لصفحة لوحة التحكم (Admin Panel) وتحديثها لتجد الأسئلة.';
+            } catch (err) {
+                status.style.color = 'red';
+                status.innerText = 'حدث خطأ أثناء الاسترجاع: ' + err.message;
+            }
+            btn.innerText = 'استرجاع البيانات الآن';
+            btn.disabled = false;
+        }
+    </script>
+</body>
+</html>

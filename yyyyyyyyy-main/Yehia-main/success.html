@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تم الدفع بنجاح | المحامي يحيى رضوان</title>
+    <link rel="icon" href="logo/aaaa.jpg.jpeg" type="image/jpeg">
+    <meta name="description" content="تم الدفع بنجاح">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            corePlugins: {
+                preflight: false,
+            }
+        }
+    </script>
+    <style>
+        .success-container {
+            max-width: 600px;
+            margin: 150px auto 100px auto;
+            padding: 50px 30px;
+            background-color: var(--bg-surface, #1C1815);
+            border: 1px solid rgba(184, 156, 101, 0.2);
+            border-radius: var(--border-radius, 12px);
+            text-align: center;
+        }
+        .success-icon {
+            font-size: 5rem;
+            color: #25D366; /* WhatsApp Green for checkmark, or primary color */
+            margin-bottom: 20px;
+        }
+        .success-title {
+            color: var(--primary, #B89C65);
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .success-message {
+            color: var(--text-body, #A8A29E);
+            line-height: 1.8;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        .whatsapp-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background-color: #25D366;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .whatsapp-btn:hover {
+            background-color: #128C7E;
+            transform: translateY(-2px);
+            color: white;
+        }
+        .whatsapp-btn i {
+            font-size: 1.5rem;
+        }
+    </style>
+    <!-- Meta Pixel - deferred to not block LCP -->
+    <script>
+        // Defer Facebook Pixel until after page load to avoid blocking LCP
+        window.addEventListener('load', function () {
+            !function (f, b, e, v, n, t, s) {
+                if (f.fbq) return; n = f.fbq = function () {
+                    n.callMethod ?
+                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+                };
+                if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+                n.queue = []; t = b.createElement(e); t.async = !0;
+                t.src = v; s = b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t, s)
+            }(window, document, 'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '1879911229646791');
+            fbq('track', 'PageView');
+            fbq('track', 'CompleteRegistration');
+        });
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id=1879911229646791&ev=PageView&noscript=1" /></noscript>
+    <!-- End Meta Pixel Code -->
+</head>
+
+<body>
+
+    <!-- Navbar Section -->
+    <nav class="navbar">
+        <div class="nav-logo">
+            <a href="index.html">
+                <img src="logo/aaaa.jpg.jpeg" alt="شعار الدورة" class="logo-img dyn_site_logo">
+            </a>
+        </div>
+        <div class="nav-menu">
+            <ul class="nav-links">
+                <li><a href="index.html#hero">الرئيسية</a></li>
+                <li><a href="index.html#details">تفاصيل الباقة</a></li>
+                <li><a href="index.html#courses">المحاور والمدربين</a></li>
+                <li><a href="index.html#faq">الأسئلة الشائعة</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <div class="container px-4 mx-auto">
+        <div class="success-container">
+            <i class="fa-solid fa-circle-check success-icon"></i>
+            <h1 class="success-title">تم الدفع بنجاح!</h1>
+            <p class="success-message">لقد تم استلام دفعتك بنجاح. شكراً لثقتك بنا.</p>
+            
+            <a href="https://wa.me/201118388010?text=مرحباً،%20لقد%20قمت%20بالدفع%20وأرغب%20في%20تفعيل%20الاشتراك%20الخاص%20بي" target="_blank" class="whatsapp-btn">
+                <i class="fa-brands fa-whatsapp"></i>
+                تواصل على الواتساب لتفعيل الاشتراك الخاص بك
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="footer-logo-wrapper">
+                    <img src="logo/aaaa.jpg.jpeg" alt="شعار الدورة" class="footer-logo dyn_site_logo">
+                </div>
+                <p>مبادرة معاً ضد جرائم الإنترنت.</p>
+            </div>
+            <div class="footer-col">
+                <h3>بيانات التواصل</h3>
+                <p><i class="fa-solid fa-phone"></i> واتساب: 01118388010</p>
+                <p><i class="fa-solid fa-envelope"></i> البريد: yahiaredwan@outlook.com</p>
+                <p><i class="fa-solid fa-location-dot"></i> العنوان: الدقي، الجيزة، مصر</p>
+            </div>
+            <div class="footer-col">
+                <h3>روابط هامة</h3>
+                <p><a href="terms.html">الشروط والأحكام</a></p>
+                <p><a href="privacy.html">سياسة الخصوصية</a></p>
+                <p><a href="refund.html">سياسة الاسترجاع</a></p>
+                <p><a href="shipping.html">سياسة الشحن والتسليم</a></p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>جميع الحقوق محفوظة &copy; 2026 - دورة الحماية من الابتزاز الإلكتروني</p>
+        </div>
+    </footer>
+
+    <!-- Credits Bar -->
+    <div class="credits-bar">
+        <p>Powered by <a href="https://www.instagram.com/operixsys/" target="_blank" class="operix-link">Operix</a></p>
+    </div>
+
+</body>
+</html>
