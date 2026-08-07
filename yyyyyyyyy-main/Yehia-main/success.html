@@ -87,7 +87,8 @@
                 'https://connect.facebook.net/en_US/fbevents.js');
             fbq('init', '1879911229646791');
             fbq('track', 'PageView');
-            fbq('track', 'CompleteRegistration');
+            var dynamicPrice = localStorage.getItem('sc_checkout_price') || '700';
+            fbq('track', 'Purchase', { value: parseFloat(dynamicPrice), currency: 'EGP' });
         });
     </script>
     <noscript><img height="1" width="1" style="display:none"

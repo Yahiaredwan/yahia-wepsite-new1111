@@ -813,6 +813,7 @@
 
                     const checkoutUrl = payRes.data?.url;
                     if (checkoutUrl) {
+                        localStorage.setItem('sc_checkout_price', cartTotal);
                         window.location.href = checkoutUrl;
                         return; // Redirecting
                     } else {
@@ -842,7 +843,7 @@
 
                 // FB CAPI
                 try {
-                    if (window.fbq) fbq('track', 'CompleteRegistration');
+                    if (window.fbq) fbq('track', 'Purchase', { value: cartTotal, currency: 'EGP' });
                     const hashedPhone = await hashData(phone);
                     const { data: { session } } = await supabaseClient.auth.getSession();
                     const email = session?.user?.email || "";
@@ -850,11 +851,15 @@
 
                     await supabaseClient.functions.invoke('facebook-capi', {
                         body: {
-                            event_name: 'CompleteRegistration',
+                            event_name: 'Purchase',
                             event_source_url: window.location.href,
                             user_data: {
                                 ph: [hashedPhone],
                                 em: hashedEmail ? [hashedEmail] : undefined
+                            },
+                            custom_data: {
+                                value: cartTotal,
+                                currency: 'EGP'
                             }
                         }
                     });
