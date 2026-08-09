@@ -360,7 +360,7 @@
             <p style="font-size: 18px; margin-bottom: 30px;">
                 الرجاء التواصل معنا عبر الواتساب لتأكيد الدفع وتفعيل اشتراكك فوراً لتتمكن من الوصول لمحتوى الدورة.
             </p>
-            <a href="https://wa.me/201118388010?text=مرحباً،%20لقد%20قمت%20بالتحويل%20وأرغب%20في%20تأكيد%20الدفع%20وتفعيل%20الاشتراك" target="_blank" class="btn-primary wa_activation_link"
+            <a href="https://wa.me/201118388010?text=مرحباً،%20لقد%20قمت%20بالتحويل%20وأرغب%20في%20تأكيد%20الدفع%20وتفعيل%20الاشتراك" target="_blank" class="btn-primary wa_activation_link" id="checkoutWaBtn"
                 style="background: #25D366; border-color: #25D366; display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-size: 18px; padding: 15px 30px; text-decoration: none;">
                 <i class="fa-brands fa-whatsapp"></i> تواصل عبر الواتساب الآن
             </a>
@@ -674,7 +674,14 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 if (urlParams.get('status') === 'success') {
                     const successModal = document.getElementById('whatsappSuccessModal');
-                    if (successModal) successModal.classList.add('active');
+                    if (successModal) {
+                        successModal.classList.add('active');
+                        // Auto redirect to WhatsApp
+                        setTimeout(() => {
+                            const waBtn = document.getElementById('checkoutWaBtn');
+                            if (waBtn) window.location.href = waBtn.href;
+                        }, 3000);
+                    }
                 } else if (urlParams.get('status') === 'fail') {
                     showToast('فشلت عملية الدفع الإلكتروني. يرجى المحاولة مرة أخرى أو اختيار طريقة أخرى.', 'error');
                 }
@@ -879,6 +886,12 @@
                 if (text) text.style.display = 'block';
 
                 successModal.classList.add('active');
+                
+                // Auto redirect to WhatsApp
+                setTimeout(() => {
+                    const waBtn = document.getElementById('checkoutWaBtn');
+                    if (waBtn) window.location.href = waBtn.href;
+                }, 3000);
 
             } catch (err) {
                 console.error(err);

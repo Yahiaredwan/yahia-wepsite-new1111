@@ -120,14 +120,26 @@
         <div class="success-container">
             <i class="fa-solid fa-circle-check success-icon"></i>
             <h1 class="success-title">تم الدفع بنجاح!</h1>
-            <p class="success-message">لقد تم استلام دفعتك بنجاح. شكراً لثقتك بنا.</p>
+            <p class="success-message">لقد تم استلام دفعتك بنجاح. شكراً لثقتك بنا.<br>جاري تحويلك إلى الواتساب تلقائياً...</p>
             
-            <a href="https://wa.me/201118388010?text=مرحباً،%20لقد%20قمت%20بالدفع%20وأرغب%20في%20تفعيل%20الاشتراك%20الخاص%20بي" target="_blank" class="whatsapp-btn">
+            <a href="https://wa.me/201118388010?text=مرحباً،%20لقد%20قمت%20بالدفع%20وأرغب%20في%20تفعيل%20الاشتراك%20الخاص%20بي" id="waRedirectBtn" target="_blank" class="whatsapp-btn">
                 <i class="fa-brands fa-whatsapp"></i>
                 تواصل على الواتساب لتفعيل الاشتراك الخاص بك
             </a>
         </div>
     </div>
+
+    <script>
+        // Auto-redirect to WhatsApp on page load for mobile and desktop
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                var waBtn = document.getElementById('waRedirectBtn');
+                if (waBtn) {
+                    window.location.href = waBtn.href;
+                }
+            }, 3000); // 3 seconds delay before opening WhatsApp
+        });
+    </script>
 
     <!-- Footer -->
     <footer class="footer">
