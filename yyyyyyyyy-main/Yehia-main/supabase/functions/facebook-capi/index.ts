@@ -1,18 +1,23 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const PIXEL_ID = "1879911229646791";
-// We can use an environment variable for the access token in production, but we will hardcode it for now as requested.
-const ACCESS_TOKEN = "EAAR2DkffaHkBSF0mFyZCDZBCxDGdq2pZAGqiZB9jsCsazozLCfGSGbYUafepzNMxoXolPoyoZBOeTjTAIWwCSYCMgBuXlp13AwqYcsewDA4TcoNf7gosC2ZAy5RBAZCmW3O4tZCMuVZCjtsv1NLBNVplGlN0rVX0BYWm8rZCZAwBIDyTY6pYhUICGSMiagXJaa8IwZDZD";
+const PIXEL_ID = Deno.env.get("FB_PIXEL_ID") || "";
+const ACCESS_TOKEN = Deno.env.get("FB_ACCESS_TOKEN") || "";
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+const ALLOWED_ORIGINS = ['https://yahiaredwan.com', 'https://www.yahiaredwan.com'];
+
+function getCorsHeaders(req: Request) {
+  const origin = req.headers.get('origin') || '';
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  };
+}
 
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+    return new Response('ok', { headers: getCorsHeaders(req) });
   }
 
   try {
@@ -20,6 +25,10 @@ serve(async (req) => {
 
     if (!user_data || (!user_data.em && !user_data.ph)) {
       throw new Error("User data (em or ph) is required.");
+    }
+
+    if (!PIXEL_ID || !ACCESS_TOKEN) {
+      throw new Error("Facebook CAPI credentials are not configured. Set FB_PIXEL_ID and FB_ACCESS_TOKEN as secrets.");
     }
 
     const payload = {
@@ -58,13 +67,13 @@ serve(async (req) => {
     }
 
     return new Response(JSON.stringify({ success: true, message: "Event sent successfully", fbResponse }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' },
       status: 200,
     });
 
   } catch (error) {
     return new Response(JSON.stringify({ success: false, error: error.message }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' },
       status: 400,
     });
   }

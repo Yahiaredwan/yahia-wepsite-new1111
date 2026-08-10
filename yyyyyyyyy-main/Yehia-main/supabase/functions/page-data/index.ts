@@ -12,16 +12,22 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
  *   - Connection Pooling أفضل (طلب واحد يفتح اتصالاً واحداً)
  */
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+const ALLOWED_ORIGINS = ['https://yahiaredwan.com', 'https://www.yahiaredwan.com'];
+
+function getCorsHeaders(req: Request) {
+  const origin = req.headers.get('origin') || '';
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Headers":
+      "authorization, x-client-info, apikey, content-type",
+  };
+}
 
 Deno.serve(async (req) => {
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: getCorsHeaders(req) });
   }
 
   try {
@@ -68,7 +74,7 @@ Deno.serve(async (req) => {
 
     return new Response(JSON.stringify(responseData), {
       headers: {
-        ...corsHeaders,
+        ...getCorsHeaders(req),
         "Content-Type": "application/json",
         // ─────────────────────────────────────
         // Cache headers: CDN يكّش 5 دقائق
@@ -84,7 +90,7 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({ error: "Failed to load page data", message: error.message }),
       {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
         status: 500,
       }
     );

@@ -11,15 +11,21 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
  * الاستخدام: استدعِها قبل إدراج subscription جديد
  */
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+const ALLOWED_ORIGINS = ['https://yahiaredwan.com', 'https://www.yahiaredwan.com'];
+
+function getCorsHeaders(req: Request) {
+  const origin = req.headers.get('origin') || '';
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Headers":
+      "authorization, x-client-info, apikey, content-type",
+  };
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: getCorsHeaders(req) });
   }
 
   try {
@@ -28,7 +34,7 @@ Deno.serve(async (req) => {
     if (!phone) {
       return new Response(
         JSON.stringify({ allowed: false, message: "رقم الهاتف مطلوب" }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+        { headers: { ...getCorsHeaders(req), "Content-Type": "application/json" }, status: 400 }
       );
     }
 
@@ -56,7 +62,7 @@ Deno.serve(async (req) => {
           message: "لقد تجاوزت الحد المسموح به للمحاولات. يرجى الانتظار ساعة ثم المحاولة مجدداً.",
         }),
         {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
           status: 429,
         }
       );
@@ -79,7 +85,7 @@ Deno.serve(async (req) => {
           message: "هذا الرقم مشترك مسبقاً. تواصل معنا عبر الواتساب لتفعيل اشتراكك.",
         }),
         {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
           status: 409,
         }
       );
@@ -91,7 +97,7 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({ allowed: true }),
       {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
         status: 200,
       }
     );
@@ -101,7 +107,7 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({ allowed: true, warning: "rate limit check failed, proceeding" }),
       {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
         status: 200,
       }
     );

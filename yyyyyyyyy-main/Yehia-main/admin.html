@@ -1022,7 +1022,7 @@
         const inputs = e.target.querySelectorAll('input[type="text"], input[type="number"], textarea');
         const updates = Array.from(inputs).map(input => ({ id: input.id, content: input.value, type: 'text' }));
         const { error } = await supabaseClient.from('site_content').upsert(updates);
-        if (error) alert("خطأ في حفظ إعدادات الذكاء الاصطناعي"); else showToast('تم تحديث عقل المساعد الذكي بنجاح!');
+        if (error) alert("خطأ في حفظ إعدادات الذكاء الاصطناعي: " + error.message); else showToast('تم تحديث عقل المساعد الذكي بنجاح!');
     });
 
     // --- Save Pixels Settings ---
