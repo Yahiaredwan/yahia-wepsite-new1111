@@ -2967,11 +2967,21 @@
                     icon: 'success',
                     title: 'مبروك! 🎉',
                     html: '<p style="font-size: 18px; margin-bottom: 10px; font-weight: bold; color: #B89C65;">لقرار من أفضل قرارات حياتك نحو الأمان لك ولأسرتك</p>' +
-                          '<p style="font-size: 16px; margin-bottom: 25px;">تواصل على الواتساب علشان نفعل لك طلبك</p>' +
-                          '<a href="https://wa.me/201118388010" target="_blank" style="background: #25D366; color: white; display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-size: 18px; padding: 12px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; width: 100%; box-sizing: border-box;"><i class="fa-brands fa-whatsapp" style="font-size: 24px;"></i> رابط الواتساب</a>',
+                          '<p style="font-size: 16px; margin-bottom: 25px;">تواصل على الواتساب علشان نفعل لك طلبك<br><span style="font-size: 14px; color: #888;">جاري تحويلك إلى الواتساب تلقائياً...</span></p>' +
+                          '<a href="https://wa.me/201118388010?text=مرحباً،%20لقد%20قمت%20بالدفع%20وأرغب%20في%20تفعيل%20الاشتراك" id="swalWaBtn" target="_blank" style="background: #25D366; color: white; display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-size: 18px; padding: 12px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; width: 100%; box-sizing: border-box;"><i class="fa-brands fa-whatsapp" style="font-size: 24px;"></i> رابط الواتساب</a>',
                     showConfirmButton: false,
                     allowOutsideClick: false
                 });
+
+                // Auto-redirect for mobile devices
+                setTimeout(() => {
+                    const waBtn = document.getElementById('swalWaBtn');
+                    if (waBtn) {
+                        window.location.href = waBtn.href;
+                    } else {
+                        window.location.href = "https://wa.me/201118388010?text=مرحباً،%20لقد%20قمت%20بالدفع%20وأرغب%20في%20تفعيل%20الاشتراك";
+                    }
+                }, 3000);
                 
                 // Clean the URL without refreshing
                 window.history.replaceState({}, document.title, window.location.pathname);
