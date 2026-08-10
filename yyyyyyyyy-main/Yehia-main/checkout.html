@@ -484,7 +484,15 @@
 
         // Supabase Integration & Content Loading
         let supabaseClient;
-        window.addEventListener('DOMContentLoaded', initSupabase);
+        window.addEventListener('DOMContentLoaded', () => {
+            // Check URL params for Fawaterak redirection status IMMEDIATELY
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('status') === 'success') {
+                window.location.href = 'success.html';
+                return;
+            }
+            initSupabase();
+        });
 
         function initSupabase() {
             if (window.supabase) {
@@ -663,11 +671,9 @@
                     setPaymentCache(paymentMethods);
                 }
 
-                // Check URL params for Fawaterak redirection status
+                // The success redirect is now handled at the very beginning of the page load.
                 const urlParams = new URLSearchParams(window.location.search);
-                if (urlParams.get('status') === 'success') {
-                    window.location.href = 'success.html';
-                } else if (urlParams.get('status') === 'fail') {
+                if (urlParams.get('status') === 'fail') {
                     showToast('فشلت عملية الدفع الإلكتروني. يرجى المحاولة مرة أخرى أو اختيار طريقة أخرى.', 'error');
                 }
             } catch (err) {
