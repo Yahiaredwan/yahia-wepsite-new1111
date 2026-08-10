@@ -673,15 +673,7 @@
                 // Check URL params for Fawaterak redirection status
                 const urlParams = new URLSearchParams(window.location.search);
                 if (urlParams.get('status') === 'success') {
-                    const successModal = document.getElementById('whatsappSuccessModal');
-                    if (successModal) {
-                        successModal.classList.add('active');
-                        // Auto redirect to WhatsApp
-                        setTimeout(() => {
-                            const waBtn = document.getElementById('checkoutWaBtn');
-                            if (waBtn) window.location.href = waBtn.href;
-                        }, 3000);
-                    }
+                    window.location.href = 'success.html';
                 } else if (urlParams.get('status') === 'fail') {
                     showToast('فشلت عملية الدفع الإلكتروني. يرجى المحاولة مرة أخرى أو اختيار طريقة أخرى.', 'error');
                 }
@@ -851,7 +843,7 @@
 
                 // FB CAPI
                 try {
-                    if (window.fbq) fbq('track', 'Purchase', { value: cartTotal, currency: 'EGP' });
+
                     const hashedPhone = await hashData(phone);
                     const { data: { session } } = await supabaseClient.auth.getSession();
                     const email = session?.user?.email || "";
@@ -873,25 +865,9 @@
                     });
                 } catch (fbErr) {}
 
-                // Show Success Modal
+                // Redirect to unified success page
                 document.getElementById('subscriptionForm').reset();
-                const preview = document.getElementById('receiptPreview');
-                if (preview) {
-                    preview.src = '';
-                    preview.style.display = 'none';
-                }
-                const icon = document.getElementById('receiptIcon');
-                if (icon) icon.style.display = 'block';
-                const text = document.getElementById('receiptText');
-                if (text) text.style.display = 'block';
-
-                successModal.classList.add('active');
-                
-                // Auto redirect to WhatsApp
-                setTimeout(() => {
-                    const waBtn = document.getElementById('checkoutWaBtn');
-                    if (waBtn) window.location.href = waBtn.href;
-                }, 3000);
+                window.location.href = 'success.html';
 
             } catch (err) {
                 console.error(err);
