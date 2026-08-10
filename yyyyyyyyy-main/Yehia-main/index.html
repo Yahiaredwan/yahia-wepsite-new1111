@@ -55,15 +55,7 @@
         } catch(e) {}
     </script>
 
-    <!-- Tailwind CSS (No Preflight to avoid conflicts) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            corePlugins: {
-                preflight: false,
-            }
-        }
-    </script>
+
 
     <!-- Preload LCP hero content hint -->
     <link rel="dns-prefetch" href="https://tiornpjjrtajnmgvoqfb.supabase.co">
@@ -1842,6 +1834,9 @@
                         if (el.tagName === 'IMG') {
                             if (item.content && item.content.trim() !== '') {
                                 el.src = item.content;
+                                if (!item.id.includes('hero_img')) {
+                                    el.setAttribute('loading', 'lazy');
+                                }
                                 el.style.display = 'block';
                             } else {
                                 el.removeAttribute('src');
