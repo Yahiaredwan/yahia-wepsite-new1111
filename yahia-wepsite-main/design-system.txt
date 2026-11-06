@@ -1,0 +1,23 @@
+# Design System & UI/UX Rules
+**Project:** Cyber Extortion Protection Landing Page
+**Theme:** Modern Dark Mode
+
+## 1. Color Palette (Updated)
+*   **Background (Main):** `#12100E` (Deep Warm Black - for the main background)
+*   **Surface/Cards:** `#1C1815` (Dark Charcoal/Brown from the logo - for cards and navbar)
+*   **Primary (Trust/Legal):** `#B89C65` (Classic Gold from the logo - for icons, links, and accents)
+*   **Accent/CTA (Action):** `#B89C65` (Use the same Gold for buttons, but make the text inside it `#12100E` for high contrast).
+*   **Text (Headings):** `#F3F0EA` (Off-white/Cream for elegant readability)
+*   **Text (Body/Paragraphs):** `#A8A29E` (Warm Slate/Gray)
+
+## 2. Typography
+*   **Primary Font:** `Cairo` or `Tajawal` (Google Fonts).
+*   **Style:** Clean, geometric, and highly readable. Use Bold for headings and Regular for body text.
+
+## 3. Shape & Border Radius
+*   **Rule:** Keep the basic geometric shapes of elements, but make the four corners less sharp to ensure a comfortable and professional look.
+*   **Values:** Apply a soft border radius of `8px` or `12px` to all Cards, Buttons, and Input Fields. Avoid overly rounded or completely sharp corners.
+
+## 4. Interactions & Effects
+*   **Hover States:** Since it is Dark Mode, avoid standard black drop-shadows. Instead, apply a soft "Glow" effect (using Sky Blue or Mustard Yellow) when the user hovers over trainer cards or CTA buttons.
+*   **Transitions:** All hover effects and animations should be smooth (e.g., 0.3s ease-in-out).

@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إتمام الدفع والتسجيل | المحامي يحيى رضوان</title>
+    <link rel="icon" href="logo/aaaa.jpg.jpeg" type="image/jpeg">
+    <meta name="description" content="صفحة الدفع والتسجيل الآمنة لباقة الحماية من الابتزاز الإلكتروني. سجل الآن بالجنيه المصري.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            corePlugins: {
+                preflight: false,
+            }
+        }
+    </script>
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <style>
+        .checkout-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            max-width: 1100px;
+            margin: 120px auto 60px auto;
+            padding: 0 20px;
+        }
+
+        @media (min-width: 992px) {
+            .checkout-layout {
+                grid-template-columns: 1.2fr 1fr;
+            }
+        }
+
+        .checkout-panel {
+            background-color: var(--bg-surface, #1C1815);
+            border: 1px solid rgba(184, 156, 101, 0.2);
+            border-radius: var(--border-radius, 12px);
+            padding: 30px;
+        }
+
+        .summary-panel {
+            border-color: var(--primary, #B89C65);
+        }
+
+        .product-title {
+            color: var(--primary, #B89C65);
+            font-size: 1.6rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .price-summary {
+            background: rgba(184, 156, 101, 0.05);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(184, 156, 101, 0.1);
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .price-row.total {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(184, 156, 101, 0.2);
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        .price-row.total .price-val {
+            color: var(--primary, #B89C65);
+        }
+
+        .features-list li {
+            margin-bottom: 12px;
+            color: var(--text-body, #A8A29E);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .features-list i {
+            color: var(--primary, #B89C65);
+        }
+
+        .guarantee-box {
+            border-right: 4px solid var(--primary, #B89C65);
+            background: rgba(184, 156, 101, 0.03);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 25px;
+        }
+
+        /* Form styling adjustments */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-heading, #F3F0EA);
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            background: var(--bg-main, #12100E);
+            border: 1px solid rgba(184, 156, 101, 0.3);
+            color: white;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary, #B89C65);
+            box-shadow: 0 0 5px rgba(184, 156, 101, 0.3);
+        }
+
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .payment-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            border: 1px solid rgba(184, 156, 101, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            background: rgba(255,255,255,0.02);
+        }
+
+        .payment-card:has(input[type="radio"]:checked) {
+            border-color: var(--primary, #B89C65);
+            background: rgba(184, 156, 101, 0.05);
+            box-shadow: 0 0 10px rgba(184, 156, 101, 0.2);
+        }
+
+        .payment-card:hover {
+            border-color: var(--primary, #B89C65);
+        }
+
+        .payment-card input[type="radio"] {
+            accent-color: var(--primary, #B89C65);
+            width: 18px;
+            height: 18px;
+        }
+
+        .file-upload-box {
+            border: 2px dashed rgba(184, 156, 101, 0.3);
+            border-radius: 8px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            background: rgba(255,255,255,0.01);
+            transition: var(--transition);
+        }
+
+        .file-upload-box:hover {
+            border-color: var(--primary, #B89C65);
+            background: rgba(184, 156, 101, 0.05);
+        }
+
+        .file-upload-box input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .btn-submit-checkout {
+            width: 100%;
+            padding: 15px;
+            border-radius: 8px;
+            background: var(--primary, #B89C65);
+            color: var(--bg-main, #12100E);
+            font-weight: bold;
+            font-size: 1.15rem;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-submit-checkout:hover {
+            box-shadow: 0 0 15px rgba(184, 156, 101, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-submit-checkout:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+    <!-- Meta Pixel - deferred to not block LCP -->
+    <script>
+        // Defer Facebook Pixel until after page load to avoid blocking LCP
+        window.addEventListener('load', function () {
+            !function (f, b, e, v, n, t, s) {
+                if (f.fbq) return; n = f.fbq = function () {
+                    n.callMethod ?
+                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+                };
+                if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+                n.queue = []; t = b.createElement(e); t.async = !0;
+                t.src = v; s = b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t, s)
+            }(window, document, 'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '1879911229646791');
+            fbq('track', 'PageView');
+            fbq('track', 'InitiateCheckout');
+        });
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id=1879911229646791&ev=PageView&noscript=1" /></noscript>
+    <!-- End Meta Pixel Code -->
+</head>
+
+<body>
+
+    <!-- Navbar Section -->
+    <nav class="navbar">
+        <div class="nav-logo">
+            <a href="index.html">
+                <img src="logo/aaaa.jpg.jpeg" alt="شعار الدورة" class="logo-img dyn_site_logo">
+            </a>
+        </div>
+        <div class="nav-menu" id="nav-menu">
+            <ul class="nav-links">
+                <li><a href="index.html#hero">الرئيسية</a></li>
+            </ul>
+            <div class="nav-cta">
+                <a href="index.html#pricing-new" class="btn-primary">الرجوع للعرض</a>
+            </div>
+        </div>
+        <div class="menu-toggle" id="mobile-menu">
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Checkout Content -->
+    <div class="checkout-layout">
+        <!-- Right side on Desktop: Checkout form -->
+        <div class="checkout-panel">
+            <h2 class="text-2xl font-bold mb-6 text-white border-b border-[#B89C65]/20 pb-4">بيانات التسجيل والدفع</h2>
+            <form id="subscriptionForm">
+                <div class="form-group">
+                    <label for="regFullName">الاسم الكامل</label>
+                    <input type="text" id="regFullName" class="form-control" placeholder="اكتب اسمك الثلاثي" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPhone">رقم الهاتف / الواتساب</label>
+                    <input type="tel" id="regPhone" class="form-control" placeholder="01xxxxxxxxx" required>
+                </div>
+
+                <div class="form-group">
+                    <label id="paymentModalTitle">اختر طريقة الدفع (جاري التحميل...)</label>
+                    <div class="payment-methods" id="dynamicPaymentMethods">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="transferNumber">أدخل الرقم المحول منه (أو رقم العملية)</label>
+                    <input type="text" id="transferNumber" class="form-control" placeholder="رقم الموبايل أو رقم العملية" required>
+                </div>
+
+                <div class="form-group">
+                    <label>ارفق صورة وصل التحويل</label>
+                    <div class="file-upload-box">
+                        <input type="file" id="receipt" accept="image/*" required>
+                        <i class="fa-solid fa-cloud-arrow-up text-3xl mb-2 text-[#B89C65]" id="receiptIcon"></i>
+                        <p id="receiptText" class="text-sm text-gray-400">اضغط لاختيار صورة الوصل</p>
+                        <img id="receiptPreview" src=""
+                            style="display: none; max-width: 100%; max-height: 200px; border-radius: 5px; margin-top: 10px; object-fit: contain; margin-left: auto; margin-right: auto;">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit-checkout mt-4" id="submitSubscriptionBtn">تأكيد التسجيل وإرسال الإثبات</button>
+                <p class="text-xs text-gray-400 mt-4 text-center">بإتمام الطلب، أنت توافق على <a href="terms.html" style="color:#B89C65;">الشروط والأحكام</a> و <a href="refund.html" style="color:#B89C65;">سياسة الاسترجاع</a>.</p>
+            </form>
+        </div>
+
+        <!-- Left side on Desktop: Product Summary -->
+        <div class="checkout-panel summary-panel">
+            <h2 class="product-title">باقة الحماية من الابتزاز الإلكتروني وكيفية التعامل معه</h2>
+            <p class="text-gray-400 text-sm mb-6">احصل على باقة تدريبية متكاملة تشمل 5 دورات كاملة وملفات قانونية وتوعوية ممتازة.</p>
+
+            <div class="price-summary">
+                <div class="price-row">
+                    <span class="text-gray-400">السعر الأساسي للدورة</span>
+                    <span class="line-through text-gray-500" id="dyn_cta_old_price">4500 جنيه مصري</span>
+                </div>
+                <div class="price-row">
+                    <span class="text-gray-400">عرض الإطلاق الحالي</span>
+                    <span class="text-green-500 font-semibold" id="dyn_cta_discount_percent">-84%</span>
+                </div>
+                <div class="price-row total">
+                    <span>السعر الإجمالي</span>
+                    <span class="price-val" id="dyn_cta_new_price">700 جنيه مصري</span>
+                </div>
+            </div>
+
+            <h3 class="text-white font-bold mb-4">ما تشتمل عليه الباقة:</h3>
+            <ul class="features-list">
+                <li><i class="fa-solid fa-circle-check"></i> <span>الدورة الأولى: المحور القانوني (يحيى رضوان)</span></li>
+                <li><i class="fa-solid fa-circle-check"></i> <span>الدورة الثانية: دورة القصص الواقعية للمبتزين</span></li>
+                <li><i class="fa-solid fa-circle-check"></i> <span>الدورة الثالثة: حماية الأجهزة والأسر من الاختراق</span></li>
+                <li><i class="fa-solid fa-circle-check"></i> <span>الدورة الرابعة: فهم طرق الاختراق الحديثة للحماية</span></li>
+                <li><i class="fa-solid fa-circle-check"></i> <span>الدورة الخامسة: دورة الصحة النفسية والتعافي</span></li>
+                <li><i class="fa-solid fa-circle-check"></i> <span>مكافأة: ملف أحكام محكمة وخصومات خاصة</span></li>
+            </ul>
+
+            <div class="guarantee-box">
+                <h4 class="text-white font-bold mb-1 text-sm"><i class="fa-solid fa-shield-halved text-[#B89C65]"></i> ضمان استرداد 100%</h4>
+                <p class="text-xs text-gray-400">ضمان استرجاع كامل المبلغ خلال أول ساعتين من وقت الشراء لأي سبب من الأسباب المعتمدة.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals (WhatsApp Success & Error) -->
+    <div class="modal-overlay" id="whatsappSuccessModal">
+        <div class="modal-box" style="text-align: center; padding: 40px 20px;">
+            <button class="close-modal" id="closeWhatsappModal">&times;</button>
+            <div style="font-size: 60px; color: #25D366; margin-bottom: 20px;">
+                <i class="fa-brands fa-whatsapp"></i>
+            </div>
+            <h2 style="margin-top: 0;">تم إرسال طلبك بنجاح! 🎉</h2>
+            <p style="font-size: 18px; margin-bottom: 30px;">
+                الرجاء التواصل معنا عبر الواتساب لتأكيد الدفع وتفعيل اشتراكك فوراً لتتمكن من الوصول لمحتوى الدورة.
+            </p>
+            <a href="https://wa.me/201118388010" target="_blank" class="btn-primary wa_activation_link"
+                style="background: #25D366; border-color: #25D366; display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-size: 18px; padding: 15px 30px; text-decoration: none;">
+                <i class="fa-brands fa-whatsapp"></i> تواصل عبر الواتساب الآن
+            </a>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="whatsappErrorModal">
+        <div class="modal-box" style="text-align: center; padding: 40px 20px;">
+            <button class="close-modal" id="closeWhatsappErrorModal">&times;</button>
+            <div style="font-size: 60px; color: #dc3545; margin-bottom: 20px;">
+                <i class="fa-solid fa-circle-exclamation"></i>
+            </div>
+            <h2 style="margin-top: 0;">طلب مسجل مسبقاً!</h2>
+            <p style="font-size: 18px; margin-bottom: 30px;">
+                لقد قمت بإرسال طلب اشتراك من هذا الحساب سابقاً. يرجى التواصل معنا عبر الواتساب لتفعيل اشتراكك أو حل أي مشكلة.
+            </p>
+            <a href="https://wa.me/201118388010" target="_blank" class="btn-primary wa_activation_link"
+                style="background: #25D366; border-color: #25D366; display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-size: 18px; padding: 15px 30px; text-decoration: none;">
+                <i class="fa-brands fa-whatsapp"></i> تواصل عبر الواتساب الآن
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="footer-logo-wrapper">
+                    <img src="logo/aaaa.jpg.jpeg" alt="شعار الدورة" class="footer-logo dyn_site_logo">
+                </div>
+                <p>مبادرة معاً ضد جرائم الإنترنت.</p>
+            </div>
+            <div class="footer-col">
+                <h3>بيانات التواصل</h3>
+                <p><i class="fa-solid fa-phone"></i> واتساب: 01118388010</p>
+                <p><i class="fa-solid fa-envelope"></i> البريد: yahiaredwan@outlook.com</p>
+                <p><i class="fa-solid fa-location-dot"></i> العنوان: الدقي، الجيزة، مصر</p>
+            </div>
+            <div class="footer-col">
+                <h3>روابط هامة</h3>
+                <p><a href="terms.html">الشروط والأحكام</a></p>
+                <p><a href="privacy.html">سياسة الخصوصية</a></p>
+                <p><a href="refund.html">سياسة الاسترجاع</a></p>
+                <p><a href="shipping.html">سياسة الشحن والتسليم</a></p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>جميع الحقوق محفوظة &copy; 2026 - دورة الحماية من الابتزاز الإلكتروني</p>
+        </div>
+    </footer>
+
+    <!-- Credits Bar -->
+    <div class="credits-bar">
+        <p>Powered by <a href="https://www.operixsys.online/" target="_blank" class="operix-link">Operix</a></p>
+    </div>
+
+    <script>
+        // Custom Toast Notification System
+        function showToast(message, type = 'error') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icon = type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-check';
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            // Trigger animation
+            setTimeout(() => toast.classList.add('show'), 10);
+
+            // Remove after 4 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 4000);
+        }
+
+        // Receipt Image Preview
+        document.getElementById('receipt')?.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('receiptPreview');
+            const icon = document.getElementById('receiptIcon');
+            const text = document.getElementById('receiptText');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    if (icon) icon.style.display = 'none';
+                    if (text) text.style.display = 'none';
+                }
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '';
+                preview.style.display = 'none';
+                if (icon) icon.style.display = 'block';
+                if (text) text.style.display = 'block';
+            }
+        });
+
+        // Hashing helper
+        async function hashData(string) {
+            const utf8 = new TextEncoder().encode(string.trim().toLowerCase());
+            const hashBuffer = await crypto.subtle.digest('SHA-256', utf8);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Modals close logic
+        const successModal = document.getElementById('whatsappSuccessModal');
+        const closeSuccess = document.getElementById('closeWhatsappModal');
+        if (closeSuccess && successModal) {
+            closeSuccess.addEventListener('click', () => successModal.classList.remove('active'));
+        }
+
+        const errorModal = document.getElementById('whatsappErrorModal');
+        const closeError = document.getElementById('closeWhatsappErrorModal');
+        if (closeError && errorModal) {
+            closeError.addEventListener('click', () => errorModal.classList.remove('active'));
+        }
+
+        // Supabase Integration & Content Loading
+        let supabaseClient;
+        window.addEventListener('DOMContentLoaded', initSupabase);
+
+        function initSupabase() {
+            if (window.supabase) {
+                const supabaseUrl = 'https://tiornpjjrtajnmgvoqfb.supabase.co';
+                const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRpb3JucGpqcnRham5tZ3ZvcWZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzNzU3NTQsImV4cCI6MjA5OTk1MTc1NH0.KRiPpKDR8D1HKItFwBqb93Y5bLkLQTJWDA8fUchyd_E';
+                supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+                loadDynamicContent();
+            } else {
+                setTimeout(initSupabase, 100);
+            }
+        }
+
+        const CONTENT_CACHE_KEY = 'sc_content_v1';
+        const CONTENT_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+        function getContentCache() {
+            try {
+                const raw = localStorage.getItem(CONTENT_CACHE_KEY);
+                if (!raw) return null;
+                const { data, ts } = JSON.parse(raw);
+                if (Date.now() - ts < CONTENT_CACHE_TTL) return data;
+            } catch (e) { }
+            return null;
+        }
+
+        function setContentCache(data) {
+            try {
+                localStorage.setItem(CONTENT_CACHE_KEY, JSON.stringify({ data, ts: Date.now() }));
+            } catch (e) { }
+        }
+
+        const PAYMENT_CACHE_KEY = 'sc_payment_v1';
+        
+        function getPaymentCache() {
+            try {
+                const raw = localStorage.getItem(PAYMENT_CACHE_KEY);
+                if (!raw) return null;
+                const { data, ts } = JSON.parse(raw);
+                if (Date.now() - ts < CONTENT_CACHE_TTL) return data;
+            } catch (e) { }
+            return null;
+        }
+
+        function setPaymentCache(data) {
+            try {
+                localStorage.setItem(PAYMENT_CACHE_KEY, JSON.stringify({ data, ts: Date.now() }));
+            } catch (e) { }
+        }
+
+        function renderPaymentMethods(paymentMethods) {
+            const pmContainer = document.getElementById('dynamicPaymentMethods');
+            if (pmContainer && paymentMethods && paymentMethods.length > 0) {
+                pmContainer.innerHTML = '';
+                paymentMethods.forEach((method, idx) => {
+                    const isOnline = method.number && (method.number.toLowerCase() === 'online' || method.number.toLowerCase() === 'fawaterak');
+                    pmContainer.innerHTML += `
+                        <label class="payment-card">
+                            <input type="radio" name="payment_method" value="${method.name}" data-online="${isOnline}" ${idx === 0 ? 'checked' : ''}>
+                            <span class="text-white font-medium">${method.name} ${isOnline ? '' : `- رقم: <span dir="ltr">${method.number}</span>`}</span>
+                        </label>
+                    `;
+                });
+
+                const toggleFields = () => {
+                    const selected = pmContainer.querySelector('input[name="payment_method"]:checked');
+                    const isOnline = selected && selected.getAttribute('data-online') === 'true';
+                    
+                    const transferInput = document.getElementById('transferNumber');
+                    const receiptInput = document.getElementById('receipt');
+                    
+                    if (transferInput) {
+                        transferInput.required = !isOnline;
+                        const group = transferInput.closest('.form-group');
+                        if (group) group.style.display = isOnline ? 'none' : 'block';
+                    }
+                    if (receiptInput) {
+                        receiptInput.required = !isOnline;
+                        const group = receiptInput.closest('.form-group');
+                        if (group) group.style.display = isOnline ? 'none' : 'block';
+                    }
+                    
+                    const btn = document.getElementById('submitSubscriptionBtn');
+                    if (btn) {
+                        btn.textContent = isOnline ? 'الانتقال إلى الدفع الإلكتروني' : 'تأكيد التسجيل وإرسال الإثبات';
+                    }
+                };
+
+                // Remove old listeners to prevent duplicates if called multiple times
+                pmContainer.removeEventListener('change', toggleFields);
+                pmContainer.addEventListener('change', toggleFields);
+                toggleFields();
+            }
+        }
+
+        function applyContentData(contentData) {
+            if (!contentData) return;
+            let newPrice = '700';
+            let oldPrice = '4500';
+            contentData.forEach(item => {
+                if (item.id === 'cta_new_price') {
+                    newPrice = item.content;
+                    const el = document.getElementById('dyn_cta_new_price');
+                    if (el) el.textContent = item.content.includes('جنيه') ? item.content : item.content + ' جنيه مصري';
+                }
+                if (item.id === 'cta_old_price') {
+                    oldPrice = item.content;
+                    const el = document.getElementById('dyn_cta_old_price');
+                    if (el) el.textContent = item.content.includes('جنيه') ? item.content : item.content + ' جنيه مصري';
+                }
+                if (item.id === 'site_logo' && item.content) {
+                    document.querySelectorAll('.dyn_site_logo').forEach(logo => logo.src = item.content);
+                }
+            });
+            
+            // Calculate and display discount percentage dynamically
+            const cleanNewPrice = parseFloat(newPrice.replace(/[^0-9.]/g, ''));
+            const cleanOldPrice = parseFloat(oldPrice.replace(/[^0-9.]/g, ''));
+            if (!isNaN(cleanNewPrice) && !isNaN(cleanOldPrice) && cleanOldPrice > 0) {
+                const discountPercent = Math.round(((cleanOldPrice - cleanNewPrice) / cleanOldPrice) * 100);
+                const discountEl = document.getElementById('dyn_cta_discount_percent');
+                if (discountEl) {
+                    discountEl.textContent = `-${discountPercent}%`;
+                }
+            }
+            
+            const titleEl = document.getElementById('paymentModalTitle');
+            if (titleEl) {
+                titleEl.textContent = `اختر طريقة الدفع (${newPrice} ج.م)`;
+            }
+        }
+
+        async function loadDynamicContent() {
+            // Apply cached content instantly to avoid flicker
+            const cachedContent = getContentCache();
+            if (cachedContent) {
+                applyContentData(cachedContent);
+            }
+            const cachedPayment = getPaymentCache();
+            if (cachedPayment) {
+                renderPaymentMethods(cachedPayment);
+            }
+
+            try {
+                // Fetch all data in parallel to eliminate lag/delay
+                const [sessionRes, contentRes, paymentRes] = await Promise.all([
+                    supabaseClient.auth.getSession(),
+                    supabaseClient.from('site_content').select('*'),
+                    supabaseClient.from('payment_methods').select('*').order('order_index', { ascending: true })
+                ]);
+
+                // 1. Pre-fill fields from session
+                const session = sessionRes.data?.session;
+                if (session && session.user) {
+                    const user = session.user;
+                    const regFullName = document.getElementById('regFullName');
+                    if (regFullName && user.user_metadata?.full_name) {
+                        regFullName.value = user.user_metadata.full_name;
+                    }
+                    const regPhone = document.getElementById('regPhone');
+                    if (regPhone && (user.user_metadata?.phone || user.phone)) {
+                        regPhone.value = user.user_metadata?.phone || user.phone;
+                    }
+                }
+
+                // 2. Load fresh price and logo
+                const contentData = contentRes.data;
+                if (contentData) {
+                    applyContentData(contentData);
+                    setContentCache(contentData);
+                }
+
+                // 3. Load Payment Methods
+                const paymentMethods = paymentRes.data;
+                if (paymentMethods && paymentMethods.length > 0) {
+                    renderPaymentMethods(paymentMethods);
+                    setPaymentCache(paymentMethods);
+                }
+
+                // Check URL params for Fawaterak redirection status
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('status') === 'success') {
+                    const successModal = document.getElementById('whatsappSuccessModal');
+                    if (successModal) successModal.classList.add('active');
+                } else if (urlParams.get('status') === 'fail') {
+                    showToast('فشلت عملية الدفع الإلكتروني. يرجى المحاولة مرة أخرى أو اختيار طريقة أخرى.', 'error');
+                }
+            } catch (err) {
+                console.error("Error loading checkout dynamic content:", err);
+            }
+        }
+
+        // Handle subscription submission
+        document.getElementById('subscriptionForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitSubscriptionBtn');
+            const originalText = btn.textContent;
+            btn.textContent = 'جاري إرسال الطلب...';
+            btn.disabled = true;
+
+            try {
+                const fullName = document.getElementById('regFullName').value;
+                const phone = document.getElementById('regPhone').value;
+                const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+                const transferNumber = document.getElementById('transferNumber').value;
+                const fileInput = document.getElementById('receipt');
+
+                // Check rate limit
+                try {
+                    btn.textContent = 'جاري التحقق...';
+                    const rlRes = await supabaseClient.functions.invoke('rate-limit', {
+                        body: { phone }
+                    });
+                    const rlData = rlRes.data;
+
+                    if (rlData && !rlData.allowed) {
+                        if (rlData.code === 'ALREADY_SUBSCRIBED') {
+                            const errModal = document.getElementById('whatsappErrorModal');
+                            if (errModal) errModal.classList.add('active');
+                        } else {
+                            showToast(rlData.message || 'تجاوزت الحد المسموح به. حاول مجدداً لاحقاً.', 'error');
+                        }
+                        btn.textContent = originalText;
+                        btn.disabled = false;
+                        return;
+                    }
+                } catch (rlErr) {
+                    console.warn('Rate limit check failed, proceeding:', rlErr);
+                }
+
+                btn.textContent = 'جاري إرسال الطلب...';
+
+                const selectedRadio = document.querySelector('input[name="payment_method"]:checked');
+                const isOnline = selectedRadio && selectedRadio.getAttribute('data-online') === 'true';
+
+                let receiptUrl = '';
+                if (!isOnline) {
+                    if (fileInput.files.length === 0) {
+                        showToast('الرجاء اختيار صورة وصل التحويل.');
+                        btn.textContent = originalText;
+                        btn.disabled = false;
+                        return;
+                    }
+
+                    const file = fileInput.files[0];
+                    const fileExt = file.name.split('.').pop();
+                    const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+
+                    // Upload receipt to Supabase Storage
+                    const { data: uploadData, error: uploadError } = await supabaseClient
+                        .storage
+                        .from('receipts')
+                        .upload(`public/${fileName}`, file, {
+                            cacheControl: '3600',
+                            upsert: false
+                        });
+
+                    if (uploadError) {
+                        throw new Error('فشل رفع صورة الوصل: تأكد من أن مجلد الاستقبال متاح.');
+                    }
+
+                    // Get public URL
+                    const { data: publicUrlData } = supabaseClient.storage.from('receipts').getPublicUrl(`public/${fileName}`);
+                    receiptUrl = publicUrlData.publicUrl;
+                }
+
+                // Insert subscription
+                const subscriptionPayload = {
+                    full_name: fullName,
+                    phone: phone,
+                    payment_method: paymentMethod,
+                    status: 'pending'
+                };
+
+                if (!isOnline) {
+                    subscriptionPayload.transfer_number = transferNumber;
+                    subscriptionPayload.receipt_url = receiptUrl;
+                }
+
+                const { data: subData, error: insertError } = await supabaseClient
+                    .from('subscriptions')
+                    .insert([subscriptionPayload])
+                    .select('id')
+                    .single();
+
+                if (insertError) {
+                    throw new Error('فشل في تسجيل الطلب: ' + insertError.message);
+                }
+
+                if (isOnline) {
+                    btn.textContent = 'جاري تحويلك لبوابة الدفع...';
+
+                    // Get user email if signed in
+                    const { data: { session } } = await supabaseClient.auth.getSession();
+                    const email = session?.user?.email || "";
+
+                    // Get cart total from DOM, handle Arabic numerals if any
+                    const cartTotalText = document.getElementById('dyn_cta_new_price')?.textContent || "700";
+                    const englishNumStr = cartTotalText.replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+                    const cartTotal = parseFloat(englishNumStr.replace(/[^0-9.]/g, '')) || 700;
+
+                    const payRes = await supabaseClient.functions.invoke('create-fawaterak-payment', {
+                        body: {
+                            subscriptionId: subData.id,
+                            cartTotal: cartTotal,
+                            customer: {
+                                first_name: fullName.split(' ')[0] || "Customer",
+                                last_name: fullName.split(' ').slice(1).join(' ') || "Fawaterak",
+                                email: email || "customer@example.com",
+                                phone: phone
+                            }
+                        }
+                    });
+
+                    if (payRes.error) {
+                        throw new Error('فشل بدء عملية الدفع الإلكتروني: ' + (payRes.error.message || payRes.error));
+                    }
+                    if (payRes.data?.error) {
+                        throw new Error('فشل بدء عملية الدفع الإلكتروني: ' + payRes.data.error);
+                    }
+
+                    const checkoutUrl = payRes.data?.url;
+                    if (checkoutUrl) {
+                        window.location.href = checkoutUrl;
+                        return; // Redirecting
+                    } else {
+                        throw new Error('فشل الحصول على رابط الدفع الإلكتروني.');
+                    }
+                }
+
+                // Email notification
+                try {
+                    await fetch("https://formsubmit.co/ajax/b3170f91818f2d43b9e639373d68c136", {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            _subject: "طلب اشتراك جديد (صفحة الدفع)",
+                            "اسم المشترك": fullName,
+                            "رقم الهاتف": phone,
+                            "طريقة الدفع": paymentMethod,
+                            "رقم التحويل": transferNumber,
+                            "رابط الوصل": receiptUrl,
+                            "_template": "table"
+                        })
+                    });
+                } catch (emailErr) {}
+
+                // FB CAPI
+                try {
+                    const hashedPhone = await hashData(phone);
+                    const { data: { session } } = await supabaseClient.auth.getSession();
+                    const email = session?.user?.email || "";
+                    const hashedEmail = email ? await hashData(email) : undefined;
+
+                    await supabaseClient.functions.invoke('facebook-capi', {
+                        body: {
+                            event_name: 'CompleteRegistration',
+                            event_source_url: window.location.href,
+                            user_data: {
+                                ph: [hashedPhone],
+                                em: hashedEmail ? [hashedEmail] : undefined
+                            }
+                        }
+                    });
+                } catch (fbErr) {}
+
+                // Show Success Modal
+                document.getElementById('subscriptionForm').reset();
+                const preview = document.getElementById('receiptPreview');
+                if (preview) {
+                    preview.src = '';
+                    preview.style.display = 'none';
+                }
+                const icon = document.getElementById('receiptIcon');
+                if (icon) icon.style.display = 'block';
+                const text = document.getElementById('receiptText');
+                if (text) text.style.display = 'block';
+
+                successModal.classList.add('active');
+
+            } catch (err) {
+                console.error(err);
+                showToast(err.message);
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        });
+
+        // Mobile Menu Logic
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navMenu = document.getElementById('nav-menu');
+
+        if (mobileMenu && navMenu) {
+            mobileMenu.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                mobileMenu.classList.toggle('active');
+            });
+
+            const navItems = document.querySelectorAll('.nav-links a, .nav-cta a');
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                    mobileMenu.classList.remove('active');
+                });
+            });
+
+            document.addEventListener('click', (event) => {
+                if (navMenu.classList.contains('active') && !navMenu.contains(event.target) && !mobileMenu.contains(event.target)) {
+                    navMenu.classList.remove('active');
+                    mobileMenu.classList.remove('active');
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
