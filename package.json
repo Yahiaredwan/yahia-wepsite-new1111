@@ -2,9 +2,13 @@
   "name": "yehia-website",
   "version": "1.0.0",
   "description": "Website for Law Firm",
-  "main": "index.html",
+  "main": "server.js",
   "scripts": {
-    "start": "echo 'Static website hosting'"
+    "build": "echo \"Static site - no build needed\"",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
   },
   "dependencies": {}
 }
